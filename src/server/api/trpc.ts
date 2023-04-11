@@ -42,10 +42,42 @@ const createInnerTRPCContext = (_opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (_opts: CreateNextContextOptions) => {
-  return createInnerTRPCContext({});
+
+export const getServiceSupabase = () =>
+  createClient<Database>(
+    env.NEXT_PUBLIC_SUPABASE_PROJECT_URL,
+    env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  );
+
+export const getUserAsAdmin = async (token: string) => {
+  console.log(`token:${token}`);
+  const { data, error } = await getServiceSupabase().auth.getUser(token);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
 };
 
+export const createTRPCContext = async (_opts: CreateNextContextOptions) => {
+  const req = _opts.req;
+  console.log(req.headers);
+  const { user } = req.headers.authorization
+    ? await getUserAsAdmin(req.headers.authorization)
+    : { user: null };
+
+  return {
+    prisma,
+    user,
+  };
+};
 /**
  * 2. INITIALIZATION
  *
@@ -53,9 +85,12 @@ export const createTRPCContext = (_opts: CreateNextContextOptions) => {
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { createClient } from "@supabase/supabase-js";
+import { env } from "~/env.mjs";
+import { type Database } from "~/types/supabase.types";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -93,3 +128,19 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
+
+const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.user) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+    });
+  }
+
+  return next({
+    ctx: {
+      user: ctx.user,
+    },
+  });
+});
+
+export const privateProcedure = t.procedure.use(enforceUserIsAuthed);

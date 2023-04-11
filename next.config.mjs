@@ -8,6 +8,12 @@
 const config = {
   experimental: {
     appDir: true,
+    fontLoaders: [
+      {
+        loader: "@next/font/google",
+        options: { subsets: ["latin"] },
+      },
+    ],
   },
   reactStrictMode: true,
 
