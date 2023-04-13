@@ -2,9 +2,10 @@
 import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { Inter } from "@next/font/google";
-import { SiteHeader } from "~/components/site-header";
+import { SiteHeader } from "~/components/headers/SiteHeader";
 import { cn } from "~/utils/cn";
 import { AuthContextProvider } from "~/providers/AuthContextProvider/AuthContextProvider";
+import { Toaster } from "~/components/ui/toaster";
 
 const fontSans = Inter({
   subsets: ["latin"],
@@ -23,7 +24,6 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       <head />
       <body className="min-h-screen">
         <AuthContextProvider>
-          <SiteHeader />
           <div className="container mx-auto flex flex-col items-center space-x-4 px-6 sm:justify-between sm:space-x-0">
             {children}
           </div>

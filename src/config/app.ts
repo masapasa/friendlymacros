@@ -1,6 +1,6 @@
 import { NavItem } from "../types/NavItem";
 
-export const siteConfig = {
+export const appConfig = {
   mainNav: [
     {
       title: "Feed",

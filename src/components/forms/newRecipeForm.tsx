@@ -10,16 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { diet_type, price_range } from "@prisma/client";
+import type { diet_type, price_range } from "@prisma/client";
 import { api } from "~/utils/api";
 import { Spinner } from "../ui/spinner";
-import { Upload } from "lucide-react";
 import { useFilePicker } from "use-file-picker";
-import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import Image from "next/image";
 import { uploadMealImage } from "~/server/api/utils";
 import { useUser } from "~/providers/AuthContextProvider/AuthContextProvider";
 import { toast } from "~/hooks/UseToast";
+import { Icons } from "../icons";
 
 export const mealValidationSchema = Yup.object({
   name: Yup.string().required().min(3).max(100),
@@ -223,7 +222,7 @@ export function NewMealForm() {
               />
             </div>
           ))}
-          <Upload className="h-10 w-10 text-slate-500" />
+          <Icons.upload className="h-10 w-10 text-slate-500" />
           <h4 className="mt-2 scroll-m-20 text-lg font-semibold tracking-tight text-slate-500">
             Upload meal image
           </h4>

@@ -18,6 +18,7 @@ export interface Database {
           diet: Database["public"]["Enums"]["diet_type"][]
           fats: number
           id: string
+          image_url: string | null
           name: string
           price_range: Database["public"]["Enums"]["price_range"]
           protein: number
@@ -31,6 +32,7 @@ export interface Database {
           diet: Database["public"]["Enums"]["diet_type"][]
           fats: number
           id?: string
+          image_url?: string | null
           name: string
           price_range: Database["public"]["Enums"]["price_range"]
           protein: number
@@ -44,6 +46,7 @@ export interface Database {
           diet?: Database["public"]["Enums"]["diet_type"][]
           fats?: number
           id?: string
+          image_url?: string | null
           name?: string
           price_range?: Database["public"]["Enums"]["price_range"]
           protein?: number

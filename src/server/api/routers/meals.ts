@@ -1,6 +1,6 @@
-import { diet_type, price_range } from "@prisma/client";
+import type { diet_type, price_range } from "@prisma/client";
 import * as Yup from "yup";
-import { mealValidationSchema } from "~/components/newRecipeForm/newRecipeForm";
+import { mealValidationSchema } from "~/components/forms/newRecipeForm";
 
 import {
   createTRPCRouter,

@@ -1,4 +1,4 @@
-import { NavItem } from "../types/NavItem";
+import type { NavItem } from "../types/NavItem";
 
 interface SiteConfig {
   name: string;
@@ -21,6 +21,10 @@ export const siteConfig: SiteConfig = {
     {
       title: "Sign in",
       href: "/log-in",
+    },
+    {
+      title: "Github",
+      href: "https://github.com/F-PTS",
     },
   ],
   links: {
