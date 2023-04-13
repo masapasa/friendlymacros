@@ -13,6 +13,13 @@ import {
 import { diet_type, price_range } from "@prisma/client";
 import { api } from "~/utils/api";
 import { Spinner } from "../ui/spinner";
+import { Upload } from "lucide-react";
+import { useFilePicker } from "use-file-picker";
+import { AspectRatio } from "@radix-ui/react-aspect-ratio";
+import Image from "next/image";
+import { uploadMealImage } from "~/server/api/utils";
+import { useUser } from "~/providers/AuthContextProvider/AuthContextProvider";
+import { toast } from "~/hooks/UseToast";
 
 export const mealValidationSchema = Yup.object({
   name: Yup.string().required().min(3).max(100),
@@ -39,9 +46,28 @@ interface MealFormValues {
 }
 
 export function NewMealForm() {
+  const userId = useUser().user?.id;
+
   const { mutateAsync, isLoading } = api.meal.createMeal.useMutation({
     onError: (e) => {
       console.log(e);
+    },
+  });
+
+  const [
+    openFileSelector,
+    { filesContent, plainFiles, errors: filePickerErrors },
+  ] = useFilePicker({
+    readAs: "DataURL",
+    accept: "image/*",
+    multiple: false,
+    limitFilesConfig: { max: 1 },
+    maxFileSize: 50,
+    imageSizeRestrictions: {
+      maxHeight: 3000,
+      maxWidth: 4000,
+      minHeight: 300,
+      minWidth: 400,
     },
   });
 
@@ -53,10 +79,36 @@ export function NewMealForm() {
   } = useForm<MealFormValues>();
 
   console.log(errors);
+  console.log(filesContent);
+  console.log(filePickerErrors);
 
-  const onSubmit = (data: MealFormValues) => {
-    console.log(data);
-    void mutateAsync(data);
+  const onSubmit = async (data: MealFormValues) => {
+    if (!userId) {
+      toast({
+        title: "Unauthorized",
+        description: "you have to log in",
+      });
+      return;
+    }
+
+    let url = null;
+
+    const file = plainFiles[0];
+
+    if (file) {
+      const { error, url: signedURL } = await uploadMealImage(userId, file);
+
+      if (error) {
+        toast({
+          title: "Uploading error",
+          description: error?.message,
+        });
+      }
+
+      url = signedURL;
+    }
+
+    void mutateAsync({ ...data, image_url: url ?? undefined });
   };
 
   return (
@@ -71,7 +123,6 @@ export function NewMealForm() {
         <Label htmlFor="name">Name</Label>
         <Input type="text" id="name" placeholder="Name" {...register("name")} />
       </div>
-
       <div className="grid max-w-sm items-center gap-1.5">
         <Label htmlFor="restaurant">Restaurant</Label>
         <Input
@@ -81,12 +132,10 @@ export function NewMealForm() {
           {...register("restaurant")}
         />
       </div>
-
       <div className="grid max-w-sm items-center gap-1.5">
         <Label htmlFor="city">City</Label>
         <Input type="text" id="city" placeholder="City" {...register("city")} />
       </div>
-
       <div className="grid max-w-sm items-center gap-1.5">
         <Label htmlFor="proteins">Proteins / 100g</Label>
         <Input
@@ -96,7 +145,6 @@ export function NewMealForm() {
           {...register("proteins")}
         />
       </div>
-
       <div className="grid max-w-sm items-center gap-1.5">
         <Label htmlFor="carbs">Carbs / 100g</Label>
         <Input
@@ -115,7 +163,6 @@ export function NewMealForm() {
           {...register("fats")}
         />
       </div>
-
       <div className="grid max-w-sm items-center gap-1.5">
         <Label htmlFor="diet">Diet type</Label>
         <Controller
@@ -138,7 +185,6 @@ export function NewMealForm() {
           )}
         />
       </div>
-
       <div className="grid max-w-sm items-center gap-1.5">
         <Label htmlFor="priceRange">Price Range</Label>
         <Controller
@@ -158,7 +204,32 @@ export function NewMealForm() {
           )}
         />
       </div>
-
+      <div className="col-span-2 grid items-center gap-1.5">
+        <Label>Image</Label>
+        <div
+          className="flex w-full border-spacing-10 flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 py-20 hover:border-slate-400 hover:bg-slate-50"
+          onClick={() => openFileSelector()}
+        >
+          {filesContent.map((file, index) => (
+            <div
+              className="rounded-lg border-2 border-slate-300 bg-slate-50 p-6"
+              key={index}
+            >
+              <Image
+                alt={file.name}
+                src={file.content}
+                width={300}
+                height={300}
+              />
+            </div>
+          ))}
+          <Upload className="h-10 w-10 text-slate-500" />
+          <h4 className="mt-2 scroll-m-20 text-lg font-semibold tracking-tight text-slate-500">
+            Upload meal image
+          </h4>
+          <p className="text-sm text-slate-400">select just one file</p>
+        </div>
+      </div>
       <Button type="submit" className="col-span-2" disabled={isLoading}>
         {isLoading && <Spinner />}
         Submit

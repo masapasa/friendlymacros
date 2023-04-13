@@ -10,7 +10,13 @@ import {
 
 export const mealRouter = createTRPCRouter({
   createMeal: privateProcedure
-    .input(mealValidationSchema)
+    .input(
+      mealValidationSchema.concat(
+        Yup.object({
+          image_url: Yup.string(),
+        })
+      )
+    )
     .mutation(async ({ input, ctx }) => {
       await ctx.prisma.meals.create({
         data: {
@@ -23,6 +29,7 @@ export const mealRouter = createTRPCRouter({
           restaurant: input.restaurant,
           price_range: input.priceRange as price_range,
           diet: input.diet as diet_type,
+          image_url: input.image_url,
         },
       });
     }),
