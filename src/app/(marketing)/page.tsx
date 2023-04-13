@@ -24,7 +24,7 @@ function HomePage() {
           </h1>
           <p className="max-w-[42rem] leading-normal text-slate-700 sm:text-xl sm:leading-8">
             Discover your favorite restaurants, customize your meals with macros
-            and more, and share with friends for future cravings!
+            and share with friends for future cravings!
           </p>
         </div>
         <div className="flex gap-4">

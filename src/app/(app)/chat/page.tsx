@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 function page() {
   return (
     <div>
-      <h1>feed</h1>
+      <h1>chat</h1>
     </div>
   );
 }

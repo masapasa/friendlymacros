@@ -3,10 +3,6 @@ import { NavItem } from "../types/NavItem";
 export const appConfig = {
   mainNav: [
     {
-      title: "Feed",
-      href: "/feed",
-    },
-    {
       title: "Recipes",
       href: "/recipes",
     },
@@ -17,6 +13,10 @@ export const appConfig = {
     {
       title: "Create",
       href: "/recipes/new",
+    },
+    {
+      title: "Chat",
+      href: "/chat",
     },
   ],
 };

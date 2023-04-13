@@ -19,6 +19,7 @@ import { uploadMealImage } from "~/server/api/utils";
 import { useUser } from "~/providers/AuthContextProvider/AuthContextProvider";
 import { toast } from "~/hooks/UseToast";
 import { Icons } from "../icons";
+import { v4 as uuidv4 } from "uuid";
 
 export const mealValidationSchema = Yup.object({
   name: Yup.string().required().min(3).max(100),
@@ -46,10 +47,11 @@ interface MealFormValues {
 
 export function NewMealForm() {
   const userId = useUser().user?.id;
+  const mealId = uuidv4();
 
   const { mutateAsync, isLoading } = api.meal.createMeal.useMutation({
-    onError: (e) => {
-      console.log(e);
+    onError: (error) => {
+      console.log(error);
     },
   });
 
@@ -95,7 +97,7 @@ export function NewMealForm() {
     const file = plainFiles[0];
 
     if (file) {
-      const { error, url: signedURL } = await uploadMealImage(userId, file);
+      const { error, url: signedURL } = await uploadMealImage(mealId, file);
 
       if (error) {
         toast({
@@ -107,22 +109,28 @@ export function NewMealForm() {
       url = signedURL;
     }
 
-    void mutateAsync({ ...data, image_url: url ?? undefined });
+    void mutateAsync({ ...data, image_url: url ?? undefined, id: mealId });
   };
 
   return (
     <form
-      className="grid w-full grid-cols-2 gap-6"
+      className="grid w-full grid-cols-4 gap-6"
       onSubmit={(e) => {
         e.preventDefault();
         void handleSubmit(onSubmit)(e);
       }}
     >
-      <div className="grid max-w-sm items-center gap-1.5">
-        <Label htmlFor="name">Name</Label>
-        <Input type="text" id="name" placeholder="Name" {...register("name")} />
+      <div className="col-span-4 grid items-center gap-1.5">
+        <Label htmlFor="name">Meal name</Label>
+        <Input
+          type="text"
+          id="name"
+          placeholder="Meal name"
+          className="w-full"
+          {...register("name")}
+        />
       </div>
-      <div className="grid max-w-sm items-center gap-1.5">
+      <div className="col-span-2 grid items-center gap-1.5">
         <Label htmlFor="restaurant">Restaurant</Label>
         <Input
           type="text"
@@ -131,11 +139,33 @@ export function NewMealForm() {
           {...register("restaurant")}
         />
       </div>
-      <div className="grid max-w-sm items-center gap-1.5">
+
+      <div className="grid items-center gap-1.5">
         <Label htmlFor="city">City</Label>
         <Input type="text" id="city" placeholder="City" {...register("city")} />
       </div>
+
       <div className="grid max-w-sm items-center gap-1.5">
+        <Label htmlFor="priceRange">Price Range</Label>
+        <Controller
+          control={control}
+          name="priceRange"
+          render={({ field: { onChange, value } }) => (
+            <Select onValueChange={onChange} value={value}>
+              <SelectTrigger>
+                <SelectValue placeholder="Price range" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="normal">normal</SelectItem>
+                <SelectItem value="cheap">cheap</SelectItem>
+                <SelectItem value="expensive">expensive</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+        />
+      </div>
+
+      <div className="grid items-center gap-1.5">
         <Label htmlFor="proteins">Proteins / 100g</Label>
         <Input
           type="number"
@@ -184,26 +214,8 @@ export function NewMealForm() {
           )}
         />
       </div>
-      <div className="grid max-w-sm items-center gap-1.5">
-        <Label htmlFor="priceRange">Price Range</Label>
-        <Controller
-          control={control}
-          name="priceRange"
-          render={({ field: { onChange, value } }) => (
-            <Select onValueChange={onChange} value={value}>
-              <SelectTrigger>
-                <SelectValue placeholder="Price range" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="normal">normal</SelectItem>
-                <SelectItem value="cheap">cheap</SelectItem>
-                <SelectItem value="expensive">expensive</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
-      </div>
-      <div className="col-span-2 grid items-center gap-1.5">
+
+      <div className="col-span-4 grid items-center gap-1.5">
         <Label>Image</Label>
         <div
           className="flex w-full border-spacing-10 flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 py-20 hover:border-slate-400 hover:bg-slate-50"
@@ -217,8 +229,8 @@ export function NewMealForm() {
               <Image
                 alt={file.name}
                 src={file.content}
-                width={300}
-                height={300}
+                width={250}
+                height={250}
               />
             </div>
           ))}
@@ -229,7 +241,7 @@ export function NewMealForm() {
           <p className="text-sm text-slate-400">select just one file</p>
         </div>
       </div>
-      <Button type="submit" className="col-span-2" disabled={isLoading}>
+      <Button type="submit" className="col-span-4" disabled={isLoading}>
         {isLoading && <Spinner />}
         Submit
       </Button>
