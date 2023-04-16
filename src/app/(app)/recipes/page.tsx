@@ -5,21 +5,21 @@ import { useState } from "react";
 import { MealCard } from "~/components/MealCard";
 import { MealsNotFound } from "~/components/MealsNotFound";
 import { Button } from "~/components/ui/button";
+import { Spinner } from "~/components/ui/spinner";
 import { api } from "~/utils/api";
 
 function Recipes() {
   const [page, setPage] = useState(0);
 
-  const { data, fetchNextPage } = api.meal.getInfiniteMeals.useInfiniteQuery(
-    {
-      limit: 20,
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    }
-  );
-
-  const [mealsToShow, setMealsToShow] = useState(data?.pages[page]?.items);
+  const { data, fetchNextPage, isLoading } =
+    api.meal.getInfiniteMeals.useInfiniteQuery(
+      {
+        limit: 20,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      }
+    );
 
   const handleFetchNextPage = () => {
     void fetchNextPage();
@@ -36,10 +36,14 @@ function Recipes() {
 
       <hr className="col-span-4" />
 
-      {mealsToShow ? (
-        mealsToShow.map((meal, index) => <MealCard meal={meal} key={index} />)
-      ) : (
+      {isLoading && <Spinner />}
+
+      {data?.pages[page]?.items.length === 0 ? (
         <MealsNotFound />
+      ) : (
+        data?.pages[page]?.items.map((meal) => (
+          <MealCard meal={meal} key={meal.id} />
+        ))
       )}
     </div>
   );

@@ -14,11 +14,4 @@ export const exampleRouter = createTRPCRouter({
         greeting: `Hello ${input.text}`,
       };
     }),
-  getProfile: privateProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.profiles.findUnique({
-      where: {
-        id: ctx.user.id,
-      },
-    });
-  }),
 });

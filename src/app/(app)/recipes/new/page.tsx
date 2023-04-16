@@ -4,7 +4,7 @@ import { Label } from "@radix-ui/react-label";
 import { Input } from "~/components/ui/input";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
-import { NewMealForm } from "~/components/forms/newRecipeForm";
+import { NewMealForm } from "~/components/forms/newMealForm";
 
 function Page() {
   return (

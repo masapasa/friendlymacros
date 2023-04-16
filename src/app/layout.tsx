@@ -6,6 +6,7 @@ import { SiteHeader } from "~/components/headers/SiteHeader";
 import { cn } from "~/utils/cn";
 import { AuthContextProvider } from "~/providers/AuthContextProvider/AuthContextProvider";
 import { Toaster } from "~/components/ui/toaster";
+import { SiteFooter } from "~/components/Footer";
 
 const fontSans = Inter({
   subsets: ["latin"],
@@ -24,8 +25,10 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       <head />
       <body className="min-h-screen">
         <AuthContextProvider>
-          <div className="container mx-auto flex flex-col items-center space-x-4 px-6 sm:justify-between sm:space-x-0">
+          <div className="container mx-auto flex h-screen flex-col items-center justify-between space-x-4 px-6 sm:space-x-0">
             {children}
+            <Toaster />
+            <SiteFooter />
           </div>
         </AuthContextProvider>
       </body>

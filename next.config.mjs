@@ -15,6 +15,9 @@ const config = {
       },
     ],
   },
+  images: {
+    domains: ["wrnqsdocnygmcrxnatsb.supabase.co"],
+  },
   reactStrictMode: true,
 
   /**

@@ -2,28 +2,34 @@
 
 import React from "react";
 import { Button } from "~/components/ui/button";
-import { WithPrivateRoute } from "~/components/withPrivateRoute";
 import { supabase } from "~/utils/supabase-client";
+import Image from "next/image";
 
 function LogIn() {
   async function signInWithGoogle() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/feed`,
+        redirectTo: `${window.location.origin}/recipes`,
       },
     });
-
-    console.log(error);
   }
 
   return (
-    <div className="flex w-screen flex-col items-center justify-center">
-      <div className="flex gap-6">
-        <Button className="btn w-60" onClick={() => void signInWithGoogle()}>
-          Log in with Google
-        </Button>
-      </div>
+    <div className="flex h-screen w-screen flex-col items-center justify-center gap-6">
+      <Image
+        src="https://illustrations.popsy.co/gray/woman-eating-salad.svg"
+        width={250}
+        height={250}
+        alt="Hero image"
+        priority
+      />
+      <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+        Welcome to Friendly Macros!
+      </h3>
+      <Button className="btn w-60" onClick={() => void signInWithGoogle()}>
+        Sign in with Google
+      </Button>
     </div>
   );
 }

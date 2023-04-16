@@ -6,6 +6,7 @@ interface SiteConfig {
   mainNav: NavItem[];
   links: {
     github: string;
+    linkedin: string;
   };
 }
 
@@ -28,6 +29,7 @@ export const siteConfig: SiteConfig = {
     },
   ],
   links: {
-    github: "https://github.com/F-PTS",
+    github: "https://github.com/F-PTS/FriendlyMacros",
+    linkedin: "https://www.linkedin.com/in/fppts/",
   },
 };

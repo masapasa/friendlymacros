@@ -1,6 +1,6 @@
 import type { diet_type, price_range } from "@prisma/client";
 import * as Yup from "yup";
-import { mealValidationSchema } from "~/components/forms/newRecipeForm";
+import { mealValidationSchema } from "~/components/forms/newMealForm";
 
 import {
   createTRPCRouter,
@@ -35,7 +35,7 @@ export const mealRouter = createTRPCRouter({
         },
       });
     }),
-  getInfiniteMeals: publicProcedure
+  getInfiniteMeals: privateProcedure
     .input(
       Yup.object({
         limit: Yup.number().min(1).max(100).nullable(),
@@ -46,13 +46,21 @@ export const mealRouter = createTRPCRouter({
       const limit = input.limit ?? 50;
       const { cursor } = input;
 
-      const items = await ctx.prisma.meals.findMany({
+      const data = await ctx.prisma.meals.findMany({
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
           created_at: "desc",
         },
+        include: {
+          likes: true,
+        },
       });
+
+      const items = data.map((item) => ({
+        ...item,
+        isLiked: item.likes.some((val) => val.user_id === ctx.user.id),
+      }));
 
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
@@ -64,5 +72,57 @@ export const mealRouter = createTRPCRouter({
         items,
         nextCursor,
       };
+    }),
+  getMeal: privateProcedure
+    .input(
+      Yup.object({
+        meal_id: Yup.string().required(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const data = await ctx.prisma.meals.findUnique({
+        where: {
+          id: input.meal_id,
+        },
+        include: {
+          profiles: true,
+          likes: true,
+        },
+      });
+
+      return {
+        ...data,
+        isLiked: data?.likes.some((val) => val.user_id === ctx.user.id),
+      };
+    }),
+  likeMeal: privateProcedure
+    .input(
+      Yup.object({
+        meal_id: Yup.string().required(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.likes.create({
+        data: {
+          meal_id: input.meal_id,
+          user_id: ctx.user.id,
+        },
+      });
+    }),
+  unlikeMeal: privateProcedure
+    .input(
+      Yup.object({
+        meal_id: Yup.string().required(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.likes.delete({
+        where: {
+          meal_id_user_id: {
+            meal_id: input.meal_id,
+            user_id: ctx.user.id,
+          },
+        },
+      });
     }),
 });

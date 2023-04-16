@@ -17,14 +17,15 @@ import { api } from "~/utils/api";
 
 import type { profiles } from "@prisma/client";
 import { supabase } from "~/utils/supabase-client";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/compat/router";
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
   user: Pick<profiles, "avatar_url" | "email">;
 }
 
 export function UserAccountNav() {
-  const { data } = api.user.getProfile.useQuery();
+  const router = useRouter();
+  const { data } = api.user.getOwnProfile.useQuery();
 
   return (
     <DropdownMenu>
@@ -48,26 +49,17 @@ export function UserAccountNav() {
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/dashboard">Dashboard</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/dashboard/billing">Billing</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/dashboard/settings">Settings</Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onSelect={(event) => {
-            event.preventDefault();
-            void supabase.auth.signOut();
-            redirect("/");
-          }}
-        >
-          Sign out
-        </DropdownMenuItem>
+        <Link href="/">
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onSelect={(event) => {
+              event.preventDefault();
+              void supabase.auth.signOut();
+            }}
+          >
+            Sign out
+          </DropdownMenuItem>
+        </Link>
       </DropdownMenuContent>
     </DropdownMenu>
   );

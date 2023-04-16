@@ -1,5 +1,8 @@
+"use client";
+
 import { AppHeader } from "~/components/headers/AppHeader";
 import { Toaster } from "~/components/ui/toaster";
+import { WithPrivateRoute } from "~/utils/withPrivateRoute";
 
 function layout({ children }: { children: React.ReactNode }) {
   return (

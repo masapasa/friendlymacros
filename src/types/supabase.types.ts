@@ -9,6 +9,60 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      friends: {
+        Row: {
+          created_at: string
+          friend_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          friend_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          friend_id?: string
+          user_id?: string
+        }
+      }
+      invites: {
+        Row: {
+          created_at: string | null
+          reciever_id: string
+          sender_id: string
+          status: Database["public"]["Enums"]["friend_request_status"]
+        }
+        Insert: {
+          created_at?: string | null
+          reciever_id: string
+          sender_id: string
+          status: Database["public"]["Enums"]["friend_request_status"]
+        }
+        Update: {
+          created_at?: string | null
+          reciever_id?: string
+          sender_id?: string
+          status?: Database["public"]["Enums"]["friend_request_status"]
+        }
+      }
+      likes: {
+        Row: {
+          liked_at: string | null
+          meal_id: string
+          user_id: string
+        }
+        Insert: {
+          liked_at?: string | null
+          meal_id: string
+          user_id: string
+        }
+        Update: {
+          liked_at?: string | null
+          meal_id?: string
+          user_id?: string
+        }
+      }
       meals: {
         Row: {
           author_id: string
@@ -88,6 +142,7 @@ export interface Database {
         | "lowcarb"
         | "gluten-free"
         | "paleo"
+      friend_request_status: "accepted" | "pending" | "declined"
       price_range: "expensive" | "avarage" | "cheap"
     }
     CompositeTypes: {

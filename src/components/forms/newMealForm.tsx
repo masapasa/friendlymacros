@@ -16,8 +16,7 @@ import { Spinner } from "../ui/spinner";
 import { useFilePicker } from "use-file-picker";
 import Image from "next/image";
 import { uploadMealImage } from "~/server/api/utils";
-import { useUser } from "~/providers/AuthContextProvider/AuthContextProvider";
-import { toast } from "~/hooks/UseToast";
+import { useToast } from "~/hooks/UseToast";
 import { Icons } from "../icons";
 import { v4 as uuidv4 } from "uuid";
 
@@ -46,12 +45,16 @@ interface MealFormValues {
 }
 
 export function NewMealForm() {
-  const userId = useUser().user?.id;
   const mealId = uuidv4();
+  const { toast } = useToast();
 
   const { mutateAsync, isLoading } = api.meal.createMeal.useMutation({
     onError: (error) => {
-      console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Error creating meal",
+        description: error.message,
+      });
     },
   });
 
@@ -79,19 +82,13 @@ export function NewMealForm() {
     formState: { errors },
   } = useForm<MealFormValues>();
 
-  console.log(errors);
-  console.log(filesContent);
-  console.log(filePickerErrors);
+  if (errors) {
+    toast({
+      title: "Meal fortm error",
+    });
+  }
 
   const onSubmit = async (data: MealFormValues) => {
-    if (!userId) {
-      toast({
-        title: "Unauthorized",
-        description: "you have to log in",
-      });
-      return;
-    }
-
     let url = null;
 
     const file = plainFiles[0];

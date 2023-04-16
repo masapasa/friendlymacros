@@ -246,12 +246,17 @@ model users {
 }
 
 model profiles {
-  id         String    @id @db.Uuid
-  updated_at DateTime? @db.Timestamptz(6)
-  avatar_url String?
-  email      String?   @unique
-  meals      meals[]
-  users      users     @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id                                    String    @id @db.Uuid
+  updated_at                            DateTime? @db.Timestamptz(6)
+  avatar_url                            String?
+  email                                 String?   @unique
+  friends_friends_friend_idToprofiles   friends[] @relation("friends_friend_idToprofiles")
+  friends_friends_user_idToprofiles     friends?  @relation("friends_user_idToprofiles")
+  invites_invites_reciever_idToprofiles invites[] @relation("invites_reciever_idToprofiles")
+  invites_invites_sender_idToprofiles   invites?  @relation("invites_sender_idToprofiles")
+  likes                                 likes[]
+  meals                                 meals[]
+  users                                 users     @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@schema("public")
 }
@@ -269,7 +274,40 @@ model meals {
   price_range price_range
   author_id   String      @db.Uuid
   image_url   String?
+  likes       likes[]
   profiles    profiles    @relation(fields: [author_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+model likes {
+  meal_id  String    @db.Uuid
+  user_id  String    @db.Uuid
+  liked_at DateTime? @default(now()) @db.Timestamp(6)
+  meals    meals     @relation(fields: [meal_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  profiles profiles  @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([meal_id, user_id])
+  @@schema("public")
+}
+
+model friends {
+  created_at                           DateTime @default(now()) @db.Timestamptz(6)
+  user_id                              String   @id @db.Uuid
+  friend_id                            String   @db.Uuid
+  profiles_friends_friend_idToprofiles profiles @relation("friends_friend_idToprofiles", fields: [friend_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  profiles_friends_user_idToprofiles   profiles @relation("friends_user_idToprofiles", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+model invites {
+  created_at                             DateTime?             @default(now()) @db.Timestamptz(6)
+  sender_id                              String                @id(map: "invite_pkey") @db.Uuid
+  reciever_id                            String                @db.Uuid
+  status                                 friend_request_status
+  profiles_invites_reciever_idToprofiles profiles              @relation("invites_reciever_idToprofiles", fields: [reciever_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  profiles_invites_sender_idToprofiles   profiles              @relation("invites_sender_idToprofiles", fields: [sender_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@schema("public")
 }
@@ -318,6 +356,14 @@ enum price_range {
   expensive
   avarage
   cheap
+
+  @@schema("public")
+}
+
+enum friend_request_status {
+  accepted
+  pending
+  declined
 
   @@schema("public")
 }

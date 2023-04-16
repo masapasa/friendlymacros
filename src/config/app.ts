@@ -14,9 +14,5 @@ export const appConfig = {
       title: "Create",
       href: "/recipes/new",
     },
-    {
-      title: "Chat",
-      href: "/chat",
-    },
   ],
 };
