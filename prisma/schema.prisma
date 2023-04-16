@@ -251,8 +251,8 @@ model profiles {
   avatar_url                            String?
   email                                 String?   @unique
   friends_friends_friend_idToprofiles   friends[] @relation("friends_friend_idToprofiles")
-  friends_friends_user_idToprofiles     friends?  @relation("friends_user_idToprofiles")
-  invites_invites_reciever_idToprofiles invites[] @relation("invites_reciever_idToprofiles")
+  friends_friends_user_idToprofiles     friends[] @relation("friends_user_idToprofiles")
+  invites_invites_receiver_idToprofiles invites[] @relation("invites_receiver_idToprofiles")
   invites_invites_sender_idToprofiles   invites?  @relation("invites_sender_idToprofiles")
   likes                                 likes[]
   meals                                 meals[]
@@ -270,10 +270,10 @@ model meals {
   protein     Int
   carbs       Int
   fats        Int
-  diet        diet_type[]
   price_range price_range
   author_id   String      @db.Uuid
   image_url   String?
+  diet        diet_type
   likes       likes[]
   profiles    profiles    @relation(fields: [author_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
@@ -293,20 +293,21 @@ model likes {
 
 model friends {
   created_at                           DateTime @default(now()) @db.Timestamptz(6)
-  user_id                              String   @id @db.Uuid
+  user_id                              String   @db.Uuid
   friend_id                            String   @db.Uuid
   profiles_friends_friend_idToprofiles profiles @relation("friends_friend_idToprofiles", fields: [friend_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   profiles_friends_user_idToprofiles   profiles @relation("friends_user_idToprofiles", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  @@id([user_id, friend_id])
   @@schema("public")
 }
 
 model invites {
   created_at                             DateTime?             @default(now()) @db.Timestamptz(6)
   sender_id                              String                @id(map: "invite_pkey") @db.Uuid
-  reciever_id                            String                @db.Uuid
+  receiver_id                            String                @db.Uuid
   status                                 friend_request_status
-  profiles_invites_reciever_idToprofiles profiles              @relation("invites_reciever_idToprofiles", fields: [reciever_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  profiles_invites_receiver_idToprofiles profiles              @relation("invites_receiver_idToprofiles", fields: [receiver_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   profiles_invites_sender_idToprofiles   profiles              @relation("invites_sender_idToprofiles", fields: [sender_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@schema("public")

@@ -13,13 +13,13 @@ import { LikeButton } from "./LikeButton/LikeButton";
 type RouterOutput = inferRouterOutputs<typeof mealRouter>;
 
 interface MealCardProps {
-  meal: RouterOutput["getInfiniteMeals"]["items"][number];
+  meal: RouterOutput["getMeals"][number];
 }
 
 export const MealCard = ({ meal }: MealCardProps) => {
   return (
     <>
-      <div className="flex-col space-y-4 rounded-md border border-slate-300 px-6 py-6 text-center hover:border-slate-400">
+      <div className="col-span-4 flex-col space-y-4 rounded-md border border-slate-300 px-6 py-6 text-center hover:border-slate-400">
         {meal.image_url && (
           <AspectRatio ratio={16 / 9}>
             <Image

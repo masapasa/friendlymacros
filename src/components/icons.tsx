@@ -11,11 +11,15 @@ import {
   Croissant,
   Beef,
   Heart,
+  Trash,
+  X,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+  close: X,
+  trash: Trash,
   like: Heart,
   likeActive: Heart,
   carbs: Croissant,

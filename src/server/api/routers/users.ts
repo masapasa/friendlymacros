@@ -54,14 +54,98 @@ export const userRouter = createTRPCRouter({
       };
     }),
   sendFriendRequest: privateProcedure
-    .input(Yup.object({ recieverId: Yup.string().required() }))
+    .input(Yup.object({ email: Yup.string().required() }))
     .mutation(async ({ input, ctx }) => {
+      const receiverProfile = await ctx.prisma.profiles.findUnique({
+        where: { email: input.email },
+        select: { id: true },
+      });
+
+      if (!receiverProfile) {
+        throw new Error(`Profile with email ${input.email} not found`);
+      }
+
       await ctx.prisma.invites.create({
         data: {
           status: "pending",
-          reciever_id: input.recieverId,
+          receiver_id: receiverProfile.id,
           sender_id: ctx.user.id,
         },
       });
     }),
+  getFriendRequests: privateProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.invites.findMany({
+      select: {
+        created_at: true,
+        sender_id: true,
+        profiles_invites_sender_idToprofiles: {
+          select: {
+            avatar_url: true,
+            email: true,
+            _count: {
+              select: {
+                meals: true,
+              },
+            },
+            id: true,
+          },
+        },
+      },
+      where: {
+        receiver_id: ctx.user.id,
+        status: "pending",
+      },
+    });
+  }),
+  acceptFriendRequest: privateProcedure
+    .input(
+      Yup.object({
+        sender_id: Yup.string().required(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.invites.updateMany({
+        where: {
+          sender_id: input.sender_id,
+          receiver_id: ctx.user.id,
+        },
+        data: {
+          status: "accepted",
+        },
+      });
+
+      await ctx.prisma.friends.createMany({
+        data: [
+          { friend_id: input.sender_id, user_id: ctx.user.id },
+          { friend_id: ctx.user.id, user_id: input.sender_id },
+        ],
+      });
+    }),
+  declineFriendRequest: privateProcedure
+    .input(
+      Yup.object({
+        sender_id: Yup.string().required(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.invites.updateMany({
+        where: {
+          sender_id: input.sender_id,
+          receiver_id: ctx.user.id,
+        },
+        data: {
+          status: "declined",
+        },
+      });
+    }),
+  getFriends: privateProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.friends.findMany({
+      where: {
+        user_id: ctx.user.id,
+      },
+      include: {
+        profiles_friends_friend_idToprofiles: true,
+      },
+    });
+  }),
 });

@@ -29,19 +29,19 @@ export interface Database {
       invites: {
         Row: {
           created_at: string | null
-          reciever_id: string
+          receiver_id: string
           sender_id: string
           status: Database["public"]["Enums"]["friend_request_status"]
         }
         Insert: {
           created_at?: string | null
-          reciever_id: string
+          receiver_id: string
           sender_id: string
           status: Database["public"]["Enums"]["friend_request_status"]
         }
         Update: {
           created_at?: string | null
-          reciever_id?: string
+          receiver_id?: string
           sender_id?: string
           status?: Database["public"]["Enums"]["friend_request_status"]
         }

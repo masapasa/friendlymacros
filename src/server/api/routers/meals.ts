@@ -35,25 +35,28 @@ export const mealRouter = createTRPCRouter({
         },
       });
     }),
-  getInfiniteMeals: privateProcedure
+  getMeals: privateProcedure
     .input(
       Yup.object({
-        limit: Yup.number().min(1).max(100).nullable(),
-        cursor: Yup.string().nullable(),
+        friendFilter: Yup.array().of(Yup.string().required()),
       })
     )
     .query(async ({ input, ctx }) => {
-      const limit = input.limit ?? 50;
-      const { cursor } = input;
-
       const data = await ctx.prisma.meals.findMany({
-        take: limit + 1,
-        cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
           created_at: "desc",
         },
         include: {
           likes: true,
+        },
+        where: {
+          ...(input.friendFilter?.length == 0
+            ? {}
+            : {
+                author_id: {
+                  in: input.friendFilter,
+                },
+              }),
         },
       });
 
@@ -62,16 +65,7 @@ export const mealRouter = createTRPCRouter({
         isLiked: item.likes.some((val) => val.user_id === ctx.user.id),
       }));
 
-      let nextCursor: typeof cursor | undefined = undefined;
-      if (items.length > limit) {
-        const nextItem = items.pop();
-        nextCursor = nextItem?.id;
-      }
-
-      return {
-        items,
-        nextCursor,
-      };
+      return items;
     }),
   getMeal: privateProcedure
     .input(

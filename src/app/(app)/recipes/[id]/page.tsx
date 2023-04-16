@@ -65,16 +65,9 @@ const Post = () => {
       </div>
       <div className="col-span-3 col-start-4 flex items-center justify-end gap-6">
         <div className="flex items-center gap-2">
-          {data.diet?.map((dietType, index) => (
-            <>
-              <p
-                className="rounded-full border border-slate-600 px-4 py-2 text-xs tracking-wide text-slate-900"
-                key={index}
-              >
-                {dietType}
-              </p>
-            </>
-          ))}
+          <p className="rounded-full border border-slate-600 px-4 py-2 text-xs tracking-wide text-slate-900">
+            {data.diet}
+          </p>
 
           <p className="rounded-full border bg-slate-900 px-4 py-2 text-xs tracking-wide text-slate-50">
             {data.price_range}

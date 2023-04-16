@@ -49,6 +49,11 @@ export function NewMealForm() {
   const { toast } = useToast();
 
   const { mutateAsync, isLoading } = api.meal.createMeal.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Meal created successfully",
+      });
+    },
     onError: (error) => {
       toast({
         variant: "destructive",
@@ -58,10 +63,7 @@ export function NewMealForm() {
     },
   });
 
-  const [
-    openFileSelector,
-    { filesContent, plainFiles, errors: filePickerErrors },
-  ] = useFilePicker({
+  const [openFileSelector, { filesContent, plainFiles }] = useFilePicker({
     readAs: "DataURL",
     accept: "image/*",
     multiple: false,
@@ -75,21 +77,12 @@ export function NewMealForm() {
     },
   });
 
-  const {
-    control,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<MealFormValues>();
-
-  if (errors) {
-    toast({
-      title: "Meal fortm error",
-    });
-  }
+  const { control, register, handleSubmit } = useForm<MealFormValues>();
 
   const onSubmit = async (data: MealFormValues) => {
     let url = null;
+
+    console.log("dddddddddddddddddddaaaaaaaaaaaa");
 
     const file = plainFiles[0];
 
@@ -109,11 +102,14 @@ export function NewMealForm() {
     void mutateAsync({ ...data, image_url: url ?? undefined, id: mealId });
   };
 
+  console.log("dalwdklabwdkbad");
+
   return (
     <form
       className="grid w-full grid-cols-4 gap-6"
       onSubmit={(e) => {
         e.preventDefault();
+        console.log("labd");
         void handleSubmit(onSubmit)(e);
       }}
     >
@@ -137,12 +133,12 @@ export function NewMealForm() {
         />
       </div>
 
-      <div className="grid items-center gap-1.5">
+      <div className="col-span-2 grid items-center gap-1.5">
         <Label htmlFor="city">City</Label>
         <Input type="text" id="city" placeholder="City" {...register("city")} />
       </div>
 
-      <div className="grid max-w-sm items-center gap-1.5">
+      <div className="col-span-2 grid items-center gap-1.5">
         <Label htmlFor="priceRange">Price Range</Label>
         <Controller
           control={control}
@@ -162,7 +158,7 @@ export function NewMealForm() {
         />
       </div>
 
-      <div className="grid items-center gap-1.5">
+      <div className="col-span-2 grid items-center gap-1.5">
         <Label htmlFor="proteins">Proteins / 100g</Label>
         <Input
           type="number"
@@ -171,7 +167,7 @@ export function NewMealForm() {
           {...register("proteins")}
         />
       </div>
-      <div className="grid max-w-sm items-center gap-1.5">
+      <div className="col-span-2 grid items-center gap-1.5">
         <Label htmlFor="carbs">Carbs / 100g</Label>
         <Input
           type="number"
@@ -180,7 +176,7 @@ export function NewMealForm() {
           {...register("carbs")}
         />
       </div>
-      <div className="grid max-w-sm items-center gap-1.5">
+      <div className="col-span-2 grid items-center gap-1.5">
         <Label htmlFor="fats">Fats / 100g</Label>
         <Input
           type="number"
@@ -189,7 +185,7 @@ export function NewMealForm() {
           {...register("fats")}
         />
       </div>
-      <div className="grid max-w-sm items-center gap-1.5">
+      <div className="col-span-4 grid items-center gap-1.5">
         <Label htmlFor="diet">Diet type</Label>
         <Controller
           control={control}
