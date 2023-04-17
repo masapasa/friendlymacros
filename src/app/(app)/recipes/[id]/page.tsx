@@ -1,6 +1,6 @@
 "use client";
 
-import { notFound, useParams } from "next/navigation";
+import { notFound, redirect, useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import assert from "assert";
@@ -13,9 +13,22 @@ import { UserAvatar } from "~/components/UserAvatar";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { LikeButton } from "~/components/LikeButton/LikeButton";
+import { useUser } from "~/providers/AuthContextProvider/AuthContextProvider";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const Post = () => {
   const params = useParams();
+  const userId = useUser().user?.id;
 
   assert(!!params?.id, "id must be a string");
   assert(!Array.isArray(params.id), "is musn't be an array");
@@ -31,6 +44,16 @@ const Post = () => {
     }
   );
 
+  const { mutateAsync, isLoading: isDeleteLoading } =
+    api.meal.deleteMeal.useMutation();
+
+  const handleMealDelete = () => {
+    assert(!!params?.id, "id must be a string");
+    assert(!Array.isArray(params.id), "is musn't be an array");
+
+    void mutateAsync({ meal_id: params.id });
+  };
+
   if (!data || !data.profiles || isLoading)
     return (
       <div className="flex h-full w-full items-center justify-center">
@@ -40,11 +63,41 @@ const Post = () => {
 
   return (
     <div className="mt-6 grid w-full grid-cols-6 gap-6">
-      <Link href={"/recipes"} className="col-span-6">
+      <Link
+        href={"/recipes"}
+        className={data.author_id === userId ? "col-span-3" : "col-span-6"}
+      >
         <Button variant={"outline"} className="w-full">
           Go back to all recipes
         </Button>
       </Link>
+      {data.author_id === userId && (
+        <AlertDialog>
+          <AlertDialogTrigger className="col-span-3 ">
+            {" "}
+            <Button variant={"destructive"} className="w-full ">
+              Delete meal
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete your
+                account and remove your data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <Link href={"/recipes"}>
+                <AlertDialogAction onClick={() => handleMealDelete()}>
+                  Delete
+                </AlertDialogAction>
+              </Link>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
 
       <div className="col-span-6 rounded-lg border border-slate-200 p-6">
         <AspectRatio ratio={16 / 9}>

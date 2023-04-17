@@ -15,7 +15,6 @@ export function FriendsList() {
         description: error.message,
       });
     },
-    refetchOnWindowFocus: false,
   });
 
   return (

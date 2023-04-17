@@ -19,9 +19,10 @@ export function FriendCard({ friend }: FriendCardProps) {
   const { toast } = useToast();
   const profile = friend.profiles_friends_friend_idToprofiles;
   const isLoading = false;
+  const { mutateAsync } = api.user.deleteFriend.useMutation();
 
-  const handleFriendRequestAnswer = (isAccepted: boolean) => {
-    return;
+  const handleFriendDelete = () => {
+    void mutateAsync({ friend_id: friend.friend_id });
   };
 
   return (
@@ -46,7 +47,7 @@ export function FriendCard({ friend }: FriendCardProps) {
         variant={"destructive"}
         size={"sm"}
         className="w-30"
-        onClick={() => handleFriendRequestAnswer(true)}
+        onClick={() => handleFriendDelete()}
       >
         {isLoading ? <Spinner /> : <Icons.trash className="h-4 w-4" />}
       </Button>

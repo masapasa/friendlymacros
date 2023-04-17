@@ -13,11 +13,13 @@ import {
   Heart,
   Trash,
   X,
+  LogOut,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+  signOut: LogOut,
   close: X,
   trash: Trash,
   like: Heart,

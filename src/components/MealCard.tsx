@@ -37,11 +37,9 @@ export const MealCard = ({ meal }: MealCardProps) => {
 
         <hr />
 
-        <div className="flex items-center justify-around">
+        <div className="flex items-center justify-between px-3">
           <div className="flex gap-2">
-            <p className="text-sm">
-              {meal.restaurant}, {meal.city}
-            </p>
+            <p className="text-sm">{meal.restaurant}</p>
           </div>
 
           <div className="flex gap-2">

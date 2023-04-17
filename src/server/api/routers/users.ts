@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
+import { prisma } from "~/server/db";
 
 export const userRouter = createTRPCRouter({
   getOwnProfile: privateProcedure.query(async ({ ctx }) => {
@@ -146,6 +147,38 @@ export const userRouter = createTRPCRouter({
       },
       include: {
         profiles_friends_friend_idToprofiles: true,
+      },
+    });
+  }),
+  deleteFriend: privateProcedure
+    .input(
+      Yup.object({
+        friend_id: Yup.string().required(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.invites.deleteMany({
+        where: {
+          OR: [
+            { sender_id: input.friend_id, receiver_id: ctx.user.id },
+            { receiver_id: ctx.user.id, sender_id: input.friend_id },
+          ],
+        },
+      });
+
+      await ctx.prisma.friends.deleteMany({
+        where: {
+          OR: [
+            { friend_id: input.friend_id, user_id: ctx.user.id },
+            { friend_id: ctx.user.id, user_id: input.friend_id },
+          ],
+        },
+      });
+    }),
+  deleteUser: privateProcedure.mutation(async ({ ctx }) => {
+    await ctx.prisma.users.delete({
+      where: {
+        id: ctx.user.id,
       },
     });
   }),

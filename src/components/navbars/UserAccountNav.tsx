@@ -18,6 +18,7 @@ import { api } from "~/utils/api";
 import type { profiles } from "@prisma/client";
 import { supabase } from "~/utils/supabase-client";
 import { useRouter } from "next/compat/router";
+import { Icons } from "../icons";
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
   user: Pick<profiles, "avatar_url" | "email">;
@@ -26,6 +27,11 @@ interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
 export function UserAccountNav() {
   const router = useRouter();
   const { data } = api.user.getOwnProfile.useQuery();
+  const { mutateAsync } = api.user.deleteUser.useMutation();
+
+  const handleDeleteUser = () => {
+    void mutateAsync();
+  };
 
   return (
     <DropdownMenu>
@@ -51,13 +57,23 @@ export function UserAccountNav() {
         <DropdownMenuSeparator />
         <Link href="/">
           <DropdownMenuItem
-            className="cursor-pointer"
+            className="align-center flex cursor-pointer justify-between"
             onSelect={(event) => {
               event.preventDefault();
               void supabase.auth.signOut();
             }}
           >
             Sign out
+            <Icons.signOut className="h-3.5 w-3.5" />
+          </DropdownMenuItem>
+        </Link>
+        <Link href="/">
+          <DropdownMenuItem
+            className="align-center flex cursor-pointer justify-between text-red-500"
+            onClick={() => handleDeleteUser()}
+          >
+            Delete account
+            <Icons.trash className="h-3.5 w-3.5" />
           </DropdownMenuItem>
         </Link>
       </DropdownMenuContent>

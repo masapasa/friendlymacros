@@ -8,7 +8,7 @@ export function MealsNotFound() {
         No meals found
       </h2>
       <p className="leading-7 text-slate-500 [&:not(:first-child)]:mt-6">
-        You can always try to publish new meal{" "}
+        You can always try to add new friends or publish new meal{" "}
         <Link href={"/recipes/new"} className="text-slate-700 underline">
           here
         </Link>

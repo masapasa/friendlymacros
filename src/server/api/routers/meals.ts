@@ -1,4 +1,5 @@
 import type { diet_type, price_range } from "@prisma/client";
+import { id } from "date-fns/locale";
 import * as Yup from "yup";
 import { mealValidationSchema } from "~/components/forms/newMealForm";
 
@@ -116,6 +117,19 @@ export const mealRouter = createTRPCRouter({
             meal_id: input.meal_id,
             user_id: ctx.user.id,
           },
+        },
+      });
+    }),
+  deleteMeal: privateProcedure
+    .input(
+      Yup.object({
+        meal_id: Yup.string().required(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.meals.delete({
+        where: {
+          id: input.meal_id,
         },
       });
     }),
