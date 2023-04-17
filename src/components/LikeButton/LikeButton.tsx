@@ -12,13 +12,13 @@ export function LikeButton({ condition, mealId }: LikeButtonProps) {
   const utils = api.useContext();
   const { mutateAsync } = api.meal.likeMeal.useMutation({
     onSuccess: () => {
-      void utils.meal.getInfiniteMeals.invalidate();
+      void utils.meal.getMeals.invalidate();
     },
   });
 
   const { mutateAsync: unlikeMutateAsync } = api.meal.unlikeMeal.useMutation({
     onSuccess: () => {
-      void utils.meal.getInfiniteMeals.invalidate();
+      void utils.meal.getMeals.invalidate();
     },
   });
 
