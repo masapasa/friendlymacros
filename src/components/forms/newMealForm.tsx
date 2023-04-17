@@ -63,26 +63,25 @@ export function NewMealForm() {
     },
   });
 
-  const [openFileSelector, { filesContent, plainFiles }] = useFilePicker({
-    readAs: "DataURL",
-    accept: "image/*",
-    multiple: false,
-    limitFilesConfig: { max: 1 },
-    maxFileSize: 50,
-    imageSizeRestrictions: {
-      maxHeight: 3000,
-      maxWidth: 4000,
-      minHeight: 300,
-      minWidth: 400,
-    },
-  });
+  const [openFileSelector, { filesContent, plainFiles, errors }] =
+    useFilePicker({
+      readAs: "DataURL",
+      accept: "image/*",
+      multiple: false,
+      limitFilesConfig: { max: 1 },
+      maxFileSize: 50,
+      imageSizeRestrictions: {
+        maxHeight: 3000,
+        maxWidth: 4000,
+        minHeight: 300,
+        minWidth: 400,
+      },
+    });
 
   const { control, register, handleSubmit } = useForm<MealFormValues>();
 
   const onSubmit = async (data: MealFormValues) => {
     let url = null;
-
-    console.log("dddddddddddddddddddaaaaaaaaaaaa");
 
     const file = plainFiles[0];
 
@@ -102,14 +101,11 @@ export function NewMealForm() {
     void mutateAsync({ ...data, image_url: url ?? undefined, id: mealId });
   };
 
-  console.log("dalwdklabwdkbad");
-
   return (
     <form
       className="grid w-full grid-cols-4 gap-6"
       onSubmit={(e) => {
         e.preventDefault();
-        console.log("labd");
         void handleSubmit(onSubmit)(e);
       }}
     >
