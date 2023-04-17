@@ -107,7 +107,7 @@ const Post = () => {
           </span>
         </p>
         <div className="flex items-center gap-4">
-          <p className="text-xs">
+          <p className="text-right text-xs">
             posted by{" "}
             <span className="font-semibold">
               {data.profiles.email ?? data.author_id}
