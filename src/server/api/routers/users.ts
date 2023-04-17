@@ -76,6 +76,7 @@ export const userRouter = createTRPCRouter({
   getFriendRequests: privateProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.invites.findMany({
       select: {
+        receiver_id: true,
         created_at: true,
         sender_id: true,
         profiles_invites_sender_idToprofiles: {

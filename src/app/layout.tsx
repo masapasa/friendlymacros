@@ -25,10 +25,9 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       <head />
       <body className="min-h-screen">
         <AuthContextProvider>
-          <div className="container mx-auto flex h-full flex-col items-center justify-between space-x-4 px-6 sm:space-x-0">
+          <div className="container mx-auto flex h-full flex-col items-center space-x-0 px-6 md:space-x-4">
             {children}
             <Toaster />
-            <SiteFooter />
           </div>
         </AuthContextProvider>
       </body>

@@ -31,7 +31,12 @@ const Post = () => {
     }
   );
 
-  if (!data || !data.profiles || isLoading) return <Spinner />;
+  if (!data || !data.profiles || isLoading)
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Spinner />
+      </div>
+    );
 
   return (
     <div className="mt-6 grid w-full grid-cols-6 gap-6">
@@ -42,7 +47,7 @@ const Post = () => {
       </Link>
 
       <div className="col-span-6 rounded-lg border border-slate-200 p-6">
-        <AspectRatio ratio={16 / 9} className="">
+        <AspectRatio ratio={16 / 9}>
           {data.name && data?.image_url && (
             <Image
               alt={data.name}
@@ -55,72 +60,74 @@ const Post = () => {
       </div>
       <div className="col-span-3 flex items-center gap-4">
         <div className="flex-col">
-          <h2 className="scroll-m-20 pb-2 text-4xl font-semibold tracking-tight transition-colors first:mt-0">
+          <h2 className="scroll-m-20 pb-2 text-xl font-semibold tracking-tight transition-colors first:mt-0 md:text-3xl">
             {data.name}
           </h2>
-          <p className="text-sm">
+          <p className="md:text-md text-sm">
             {data.restaurant}, {data.city}
           </p>
         </div>
       </div>
-      <div className="col-span-3 col-start-4 flex items-center justify-end gap-6">
-        <div className="flex items-center gap-2">
-          <p className="rounded-full border border-slate-600 px-4 py-2 text-xs tracking-wide text-slate-900">
+      <div className="col-span-3 col-start-4 flex flex-col-reverse items-end justify-end gap-2 md:flex-row md:items-center md:gap-6">
+        <div className="flex items-center gap-2 md:gap-4">
+          <p className="rounded-full border border-slate-600 px-2 py-1 text-xs text-slate-900 md:px-4 md:py-2 md:text-sm">
             {data.diet}
           </p>
 
-          <p className="rounded-full border bg-slate-900 px-4 py-2 text-xs tracking-wide text-slate-50">
+          <p className="rounded-full border bg-slate-900 px-2 py-1 text-xs text-slate-50 md:px-4 md:py-2 md:text-sm">
             {data.price_range}
           </p>
         </div>
 
-        <div className="flex gap-1">
-          <Icons.protein className="h-4 w-4" />
-          <p className="text-sm">{data.protein}</p>
-        </div>
+        <div className="flex items-center gap-1 md:gap-4">
+          <div className="flex gap-1">
+            <Icons.protein className="h-4 w-4" />
+            <p className="text-xs md:text-sm">{data.protein}</p>
+          </div>
 
-        <div className="flex gap-1">
-          <Icons.carbs className="h-4 w-4" />
-          <p className="text-sm">{data.carbs}</p>
-        </div>
+          <div className="flex gap-1">
+            <Icons.carbs className="h-4 w-4" />
+            <p className="text-xs md:text-sm">{data.carbs}</p>
+          </div>
 
-        <div className="flex gap-1">
-          <Icons.fat className="h-4 w-4" />
-          <p className="text-sm">{data.fats}</p>
-        </div>
+          <div className="flex gap-1">
+            <Icons.fat className="h-4 w-4" />
+            <p className="text-xs md:text-sm">{data.fats}</p>
+          </div>
 
-        {data.id && <LikeButton condition={data.isLiked} mealId={data.id} />}
+          {data.id && <LikeButton condition={data.isLiked} mealId={data.id} />}
+        </div>
       </div>
       <hr className="col-span-6 h-1" />
-      <div className="col-span-6 mb-6 flex items-center justify-between">
-        <p className="text-xs">
-          posted on{" "}
+
+      <p className="col-span-3 text-xs ">
+        posted on{" "}
+        <span className="font-semibold">
+          {data.created_at?.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            hour12: true,
+            minute: "numeric",
+          })}
+        </span>
+      </p>
+
+      <div className="col-span-3 flex w-full items-center justify-end gap-4">
+        <p className="text-right text-xs">
+          posted by{" "}
           <span className="font-semibold">
-            {data.created_at?.toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              hour: "numeric",
-              hour12: true,
-              minute: "numeric",
-            })}
+            {data.profiles.email ?? data.author_id}
           </span>
         </p>
-        <div className="flex items-center gap-4">
-          <p className="text-right text-xs">
-            posted by{" "}
-            <span className="font-semibold">
-              {data.profiles.email ?? data.author_id}
-            </span>
-          </p>
-          <UserAvatar
-            user={{
-              email: data.profiles.email || null,
-              avatar_url: data.profiles.avatar_url || null,
-            }}
-            className="h-8 w-8"
-          />
-        </div>
+        <UserAvatar
+          user={{
+            email: data.profiles.email || null,
+            avatar_url: data.profiles.avatar_url || null,
+          }}
+          className="h-8 w-8"
+        />
       </div>
     </div>
   );

@@ -34,17 +34,19 @@ export function FriendRequestCard({ friendRequest }: FriendRequestCardProps) {
     <div className="flex w-full items-center justify-between rounded-lg border border-slate-200 p-6">
       <div className="flex items-center justify-center gap-4">
         <UserAvatar user={profile} />
-        <h3 className="text-md scroll-m-20 font-semibold tracking-tight">
-          {profile.email}
-        </h3>
+        <div className="flex flex-col gap-2">
+          <h3 className="text-md scroll-m-20 font-semibold tracking-tight">
+            {profile.email}
+          </h3>
+          <p className="text-sm">
+            sent{" "}
+            {friendRequest.created_at &&
+              formatDistance(friendRequest.created_at, new Date(), {
+                addSuffix: true,
+              })}
+          </p>
+        </div>
       </div>
-      <p className="text-sm">
-        sent{" "}
-        {friendRequest.created_at &&
-          formatDistance(friendRequest.created_at, new Date(), {
-            addSuffix: true,
-          })}
-      </p>
       <div className="flex items-center justify-center gap-4">
         <Button
           disabled={isDeclineLoading}

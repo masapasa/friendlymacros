@@ -19,7 +19,7 @@ interface MealCardProps {
 export const MealCard = ({ meal }: MealCardProps) => {
   return (
     <>
-      <div className="col-span-4 flex-col space-y-4 rounded-md border border-slate-300 px-6 py-6 text-center hover:border-slate-400">
+      <div className="col-span-4 flex-col space-y-4 rounded-md border border-slate-300 px-6 py-6 text-center hover:border-slate-400 md:col-span-2 lg:col-span-1">
         {meal.image_url && (
           <AspectRatio ratio={16 / 9}>
             <Image

@@ -83,7 +83,11 @@ function Recipes() {
 
       <hr className="col-span-4" />
 
-      {isLoading && <Spinner />}
+      {isLoading && (
+        <div className="col-span-4 flex h-screen w-full items-center justify-center">
+          <Spinner />
+        </div>
+      )}
 
       {data?.length === 0 ? (
         <MealsNotFound />

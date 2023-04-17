@@ -214,10 +214,10 @@ export function NewMealForm() {
           className="flex w-full border-spacing-10 flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 py-20 hover:border-slate-400 hover:bg-slate-50"
           onClick={() => openFileSelector()}
         >
-          {filesContent.map((file, index) => (
+          {filesContent.map((file) => (
             <div
               className="rounded-lg border-2 border-slate-300 bg-slate-50 p-6"
-              key={index}
+              key={file.content}
             >
               <Image
                 alt={file.name}

@@ -25,8 +25,11 @@ export function FriendRequestList() {
         (data.length === 0 ? (
           <h4 className="text-xl text-slate-700">No friend requests</h4>
         ) : (
-          data.map((friendRequest, index) => (
-            <FriendRequestCard key={index} friendRequest={friendRequest} />
+          data.map((friendRequest) => (
+            <FriendRequestCard
+              key={`${friendRequest.sender_id}-${friendRequest.receiver_id}`}
+              friendRequest={friendRequest}
+            />
           ))
         ))}
     </div>

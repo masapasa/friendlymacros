@@ -28,17 +28,19 @@ export function FriendCard({ friend }: FriendCardProps) {
     <div className="flex w-full items-center justify-between rounded-lg border border-slate-200 p-6">
       <div className="flex items-center justify-center gap-4">
         <UserAvatar user={profile} />
-        <h3 className="text-md scroll-m-20 font-semibold tracking-tight">
-          {profile.email}
-        </h3>
+        <div className="flex flex-col gap-2">
+          <h3 className="text-md scroll-m-20 font-semibold tracking-tight">
+            {profile.email}
+          </h3>
+          <p className="text-sm">
+            friends{" "}
+            {friend.created_at &&
+              formatDistance(friend.created_at, new Date(), {
+                addSuffix: true,
+              })}
+          </p>
+        </div>
       </div>
-      <p className="text-sm">
-        friends since{" "}
-        {friend.created_at &&
-          formatDistance(friend.created_at, new Date(), {
-            addSuffix: true,
-          })}
-      </p>
       <Button
         disabled={isLoading}
         variant={"destructive"}

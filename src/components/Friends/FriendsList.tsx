@@ -28,8 +28,8 @@ export function FriendsList() {
         (data.length === 0 ? (
           <h4 className="text-xl text-slate-700">You have no friends</h4>
         ) : (
-          data.map((friend, index) => (
-            <FriendCard key={index} friend={friend} />
+          data.map((friend) => (
+            <FriendCard key={friend.friend_id} friend={friend} />
           ))
         ))}
     </div>
