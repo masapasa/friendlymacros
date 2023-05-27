@@ -23,7 +23,6 @@ export const mealRouter = createTRPCRouter({
       await ctx.prisma.meals.create({
         data: {
           name: input.name,
-          author_id: ctx.user.id,
           carbs: input.carbs,
           city: input.city,
           fats: input.fats,
@@ -33,6 +32,16 @@ export const mealRouter = createTRPCRouter({
           diet: input.diet as diet_type,
           image_url: input.image_url,
           id: input.id,
+          profiles: {
+            connectOrCreate: {
+              where: {id: ctx.user.id},
+              create: {
+                id: ctx.user.id,
+                email: ctx.user.email,
+
+              }
+            }
+          }
         },
       });
     }),

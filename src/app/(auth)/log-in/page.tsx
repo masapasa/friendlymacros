@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "~/components/ui/button";
 import { supabase } from "~/utils/supabase-client";
 import Image from "next/image";
+import { prisma } from "~/server/db";
 
 function LogIn() {
   async function signInWithGoogle() {
@@ -13,7 +14,28 @@ function LogIn() {
         redirectTo: `${window.location.origin}/recipes`,
       },
     });
+  
+    // Check if the user signed in successfully
+    // if (data) {
+    //   // Create a new profile for the user
+    //   await prisma.profiles.create({
+    //     data: {
+    //       id: data.user.id,
+    //       email: data.user.email,
+    //       // Add any other fields you want to store in the profiles table
+    //     },
+    //   });
+    // }
   }
+  
+  // async function signInWithGoogle() {
+  //   const { data, error } = await supabase.auth.signInWithOAuth({
+  //     provider: "google",
+  //     options: {
+  //       redirectTo: `${window.location.origin}/recipes`,
+  //     },
+  //   });
+  // }
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-6">
