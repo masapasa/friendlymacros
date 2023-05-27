@@ -17,9 +17,11 @@ export const uploadAvatar = async (userId: string, content: File) => {
 };
 
 export const uploadMealImage = async (userId: string, content: File) => {
+  console.log("before upload", content)
   const { data, error } = await supabase.storage
     .from("meal_images")
     .upload(`${userId}`, content, { upsert: true });
+    console.log(" after upload", content)
 
   if (error) return { error };
 
