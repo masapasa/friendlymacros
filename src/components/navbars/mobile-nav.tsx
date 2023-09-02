@@ -5,7 +5,7 @@ import { useLockBody } from "~/hooks/useLockBody";
 import type { NavItem } from "~/types/NavItem";
 import { siteConfig } from "@/config/site";
 import { cn } from "~/utils/cn";
-import { Icons } from "@/components/icons";
+import { Icons } from "../icons";
 
 interface MobileNavProps {
   items: NavItem[];

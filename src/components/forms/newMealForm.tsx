@@ -17,7 +17,7 @@ import { useFilePicker } from "use-file-picker";
 import Image from "next/image";
 import { uploadMealImage } from "~/server/api/utils";
 import { useToast } from "~/hooks/UseToast";
-import { Icons } from "../icons";
+import { Icon } from "../icons";
 import { v4 as uuidv4 } from "uuid";
 
 export const mealValidationSchema = Yup.object({

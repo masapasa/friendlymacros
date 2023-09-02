@@ -22,24 +22,29 @@ export const MealCard = ({ meal }: MealCardProps) => {
       <div className="col-span-4 flex-col space-y-4 rounded-md border border-slate-300 px-6 py-6 text-center hover:border-slate-400 md:col-span-2 lg:col-span-1">
         {meal.image_url && (
           <AspectRatio ratio={16 / 9}>
-            <Image
-              alt={meal.name}
-              src={meal.image_url}
-              className="rounded-sm"
-              fill
-            />
+            <Link href={`/recipes/${meal.id}`} className="col-span-4">
+              <Image
+                src={meal.image_url}
+                alt={meal.name}
+                width={500}
+                height={500}
+                className="rounded-md"
+              />
+            </Link>
           </AspectRatio>
         )}
 
-        <h4 className="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">
-          {meal.name}
-        </h4>
-
-        <hr />
+        <Link href={`/recipes/${meal.id}`} className="col-span-4">
+          <h3 className="text-xl font-semibold">{meal.name}</h3>
+        </Link>
 
         <div className="flex items-center justify-between px-3">
           <div className="flex gap-2">
-            <p className="text-sm">{meal.restaurant}</p>
+          <LikeButton condition={meal.isLiked} mealId={meal.id} />
+          <Link href={`/restaurant?name=${meal.restaurant}`}>
+            <p className="text-xl font-semibold">{meal.restaurant}</p>
+          </Link>
+
           </div>
 
           <div className="flex gap-2">
@@ -60,13 +65,6 @@ export const MealCard = ({ meal }: MealCardProps) => {
           </div>
         </div>
         <hr className="my-2" />
-        <div className="grid w-full grid-cols-5 gap-2">
-          <Link href={`/recipes/${meal.id}`} className="col-span-4">
-            <Button className="w-full">See details</Button>
-          </Link>
-
-          <LikeButton condition={meal.isLiked} mealId={meal.id} />
-        </div>
       </div>
     </>
   );

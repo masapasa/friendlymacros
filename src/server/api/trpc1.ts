@@ -1,7 +1,13 @@
-//src/server/api/trpc.ts
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-
-import { prisma } from "~/server/db";
+// src/server/api/trpc.ts
+import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
+import { initTRPC, TRPCError } from '@trpc/server';
+import superjson from 'superjson';
+import { ZodError } from 'zod';
+import { createClient } from '@supabase/supabase-js';
+import { env } from '~/env.mjs';
+import { type Database } from '~/types/supabase.types';
+import { prisma } from '~/server/db';
+import { mealRouter } from './routers/meals';
 
 type CreateContextOptions = Record<string, never>;
 const createInnerTRPCContext = (_opts: CreateContextOptions) => {
@@ -44,12 +50,6 @@ export const createTRPCContext = async (_opts: CreateNextContextOptions) => {
     user,
   };
 };
-import { initTRPC, TRPCError } from "@trpc/server";
-import superjson from "superjson";
-import { ZodError } from "zod";
-import { createClient } from "@supabase/supabase-js";
-import { env } from "~/env.mjs";
-import { type Database } from "~/types/supabase.types";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -70,7 +70,7 @@ export const publicProcedure = t.procedure;
 const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
   if (!ctx.user) {
     throw new TRPCError({
-      code: "UNAUTHORIZED",
+      code: 'UNAUTHORIZED',
     });
   }
 
@@ -82,14 +82,5 @@ const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
 });
 
 export const privateProcedure = t.procedure.use(enforceUserIsAuthed);
-import { mealRouter } from './routers/meals';
-
-const t = initTRPC.context<typeof createTRPCContext>().create({
-  // ...
-});
 
 export const appRouter = t.router().merge('meal.', mealRouter);
-export type AppRouter = typeof appRouter;
-
-
-

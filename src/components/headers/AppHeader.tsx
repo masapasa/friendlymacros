@@ -1,8 +1,5 @@
-import Link from "next/link";
 
-import { Icons } from "../icons";
 import { MainNav } from "../navbars/main-nav";
-import { buttonVariants } from "~/components/ui/button";
 import { appConfig } from "~/config/app";
 import { UserAccountNav } from "../navbars/UserAccountNav";
 

@@ -1,13 +1,10 @@
 "use client";
 
-import { notFound, redirect, useParams } from "next/navigation";
-import { useRouter } from "next/router";
+import { notFound, useParams } from "next/navigation";
 import { api } from "~/utils/api";
 import assert from "assert";
-import { Icons } from "~/components/icons";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import Image from "next/image";
-import { Separator } from "@radix-ui/react-select";
 import { Spinner } from "~/components/ui/spinner";
 import { UserAvatar } from "~/components/UserAvatar";
 import Link from "next/link";
@@ -25,6 +22,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Icons } from "~/components/icons";
 
 const Post = () => {
   const params = useParams();

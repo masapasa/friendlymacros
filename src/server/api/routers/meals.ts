@@ -142,4 +142,30 @@ export const mealRouter = createTRPCRouter({
         },
       });
     }),
+    getMealsByRestaurant: privateProcedure
+  .input(
+    Yup.object({
+      restaurantName: Yup.string().required(),
+    })
+  )
+  .query(async ({ input, ctx }) => {
+    const data = await ctx.prisma.meals.findMany({
+      where: {
+        restaurant: input.restaurantName,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+      include: {
+        likes: true,
+      },
+    });
+
+    const items = data.map((item) => ({
+      ...item,
+      isLiked: item.likes.some((val) => val.user_id === ctx.user.id),
+    }));
+
+    return items;
+  }),
 });

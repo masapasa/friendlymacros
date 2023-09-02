@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Icons } from "../icons";
 import { MainNav } from "../navbars/main-nav";
 import { buttonVariants } from "~/components/ui/button";
 import { siteConfig } from "~/config/site";

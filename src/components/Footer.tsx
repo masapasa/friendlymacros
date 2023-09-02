@@ -1,5 +1,5 @@
 import { siteConfig } from "@/config/site";
-import { Icons } from "@/components/icons";
+import {Icons} from "./icons";
 
 export function SiteFooter() {
   return (
@@ -48,7 +48,6 @@ export function SiteFooter() {
           >
             GitHub
           </a>
-          .
         </p>
       </div>
     </footer>
